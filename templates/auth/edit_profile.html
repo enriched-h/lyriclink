@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+</head>
+<body>
+    <h2>Edit Profile</h2>
+    <form method="post" action="{% url 'edit_profile' %}">
+        {% csrf_token %}
+        <label for="bio">Bio:</label>
+        <textarea id="bio" name="bio">{{ user.bio }}</textarea><br>
+        <label for="pronouns">Pronouns:</label>
+        <input type="text" id="pronouns" name="pronouns" value="{{ user.pronouns }}"><br>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" value="{{ user.location }}"><br>
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>
