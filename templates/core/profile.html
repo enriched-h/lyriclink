@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }}'s Profile</title>
+</head>
+<body>
+    <h1>{{ user.username }}'s Profile</h1>
+    <div>
+        <strong>Bio:</strong> {{ user.bio|default:"N/A" }}<br>
+        <strong>Pronouns:</strong> {{ user.pronouns|default:"N/A" }}<br>
+        <strong>Location:</strong> {{ user.location|default:"N/A" }}<br>
+        <!-- You can display additional user information here -->
+    </div>
+
+    <!-- Example: Display user's posts -->
+    <h2>Posts</h2>
+    <ul>
+        {% for post in user.posts.all %}
+            <li>{{ post.content }}</li>
+        {% empty %}
+            <li>No posts available.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Example: Display user's followers -->
+    <h2>Followers</h2>
+    <ul>
+        {% for follower in user.followers.all %}
+            <li>{{ follower.username }}</li>
+        {% empty %}
+            <li>No followers yet.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Example: Display user's following users -->
+    <h2>Following</h2>
+    <ul>
+        {% for following_user in user.following.all %}
+            <li>{{ following_user.username }}</li>
+        {% empty %}
+            <li>Not following anyone yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

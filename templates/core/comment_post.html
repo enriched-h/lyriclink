@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment on Post</title>
+</head>
+<body>
+    <h1>Comment on Post</h1>
+
+    <!-- Display the post content -->
+    <h2>Post Content</h2>
+    <p>{{ post.content }}</p>
+
+    <!-- Form for submitting comments -->
+    <h2>Add a Comment</h2>
+    <form method="post" action="{% url 'comment_post' post_id=post.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Render the form fields as paragraphs -->
+        <button type="submit">Submit Comment</button>
+    </form>
+
+    <!-- Display existing comments -->
+    <h2>Comments</h2>
+    {% if post.comments.all %}
+        <ul>
+            {% for comment in post.comments.all %}
+                <li><strong>{{ comment.user.username }}:</strong> {{ comment.content }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No comments yet.</p>
+    {% endif %}
+</body>
+</html>

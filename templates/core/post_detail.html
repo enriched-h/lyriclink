@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Detail</title>
+</head>
+<body>
+    <h1>{{ post.content }}</h1>
+    <p>Posted by {{ post.user.username }} on {{ post.created_at }}</p>
+
+    <!-- Display post content -->
+    <div>
+        <h2>Post Content</h2>
+        <p>{{ post.content }}</p>
+    </div>
+
+    <!-- Display comments related to the post -->
+    <div>
+        <h2>Comments</h2>
+        {% if comments %}
+            <ul>
+                {% for comment in comments %}
+                    <li>
+                        <strong>{{ comment.user.username }}:</strong> {{ comment.content }}
+                    </li>
+                {% empty %}
+                    <li>No comments yet.</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No comments yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Add a form for users to submit new comments -->
+    <h2>Add a Comment</h2>
+    <form method="post" action="{% url 'comment_post' post_id=post.id %}">
+        {% csrf_token %}
+        <label for="comment">Comment:</label><br>
+        <textarea id="comment" name="comment" rows="4" cols="50"></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

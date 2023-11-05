@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results for "{{ query }}"</h1>
+
+    <!-- Display search results (posts) -->
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <strong>{{ post.user.username }}:</strong> {{ post.content }}<br>
+                    <small>Posted on {{ post.created_at }}</small>
+                </li>
+            {% empty %}
+                <li>No posts match your search query.</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts match your search query.</p>
+    {% endif %}
+</body>
+</html>
