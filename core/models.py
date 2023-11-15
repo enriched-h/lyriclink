@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, User
+from django.contrib.auth.models import AbstractUser, Group, Permission, User
 
 # Custom User model extending AbstractUser
 class CustomUser(AbstractUser):
@@ -8,8 +8,19 @@ class CustomUser(AbstractUser):
     location = models.CharField(max_length=255, blank=True)  # User's location
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)  # User's profile picture
 
+    # Add related_name to the groups and user_permissions fields
+    groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True)
+
     def __str__(self):
         return self.username  # Return the username as the string representation of the user object
+    
+    class Meta:
+        permissions = [
+            # Define custom permissions if needed
+        ]
+
+
 
 
 # Post model for user posts
