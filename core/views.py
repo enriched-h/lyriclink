@@ -170,6 +170,8 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'auth/register.html', {'form': form})
 
+
+
 def edit_profile_view(request):
     if request.method == 'POST':
         bio = request.POST['bio']
