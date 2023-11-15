@@ -149,7 +149,7 @@ def login_view(request):
         else:
             # Handle invalid login attempt (display an error message, etc.)
             pass
-    return render(request, 'login.html')
+    return render(request, 'auth/login.html')
 
 
 

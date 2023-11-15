@@ -34,7 +34,7 @@ urlpatterns = [
     path('privacy-settings/', views.privacy_settings_view, name='privacy_settings'),
 
     # Authentication URLs
-    path('login/', views.login_view, name='login'),
+    path('', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
 
     # Edit Profile URL
