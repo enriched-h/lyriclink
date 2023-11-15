@@ -8,7 +8,6 @@ urlpatterns = [
   # User Profile URLs
     path('profile/<int:user_id>/', views.profile_view, name='profile'),
     
-
     # Post URLs
     path('posts/create/', views.create_post_view, name='create_post'),
     path('posts/<int:post_id>/', views.post_detail_view, name='post_detail'),
@@ -33,4 +32,11 @@ urlpatterns = [
 
     # Privacy Settings URL
     path('privacy-settings/', views.privacy_settings_view, name='privacy_settings'),
+
+    # Authentication URLs
+    path('login/', views.login_view, name='login'),
+    path('register/', views.register_view, name='register'),
+
+    # Edit Profile URL
+    path('edit_profile/', views.edit_profile_view, name='edit_profile'),
 ]

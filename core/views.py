@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser, Post, Like, Comment, Relationship, Notification
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
 from .forms import PostForm, CommentForm
 
@@ -133,3 +135,50 @@ def privacy_settings_view(request):
         # Handle privacy settings form submission and update user's privacy preferences in the database
         pass  # Placeholder for handling form submission, to be implemented as needed
     return render(request, 'privacy_settings.html')
+
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # Redirect to the home page after successful login
+        else:
+            # Handle invalid login attempt (display an error message, etc.)
+            pass
+    return render(request, 'login.html')
+
+
+
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Optionally, log the user in after registration
+            # user = form.save()
+            # login(request, user)
+            return redirect('login')  # Redirect to the login page after successful registration
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
+
+def edit_profile_view(request):
+    if request.method == 'POST':
+        bio = request.POST['bio']
+        pronouns = request.POST['pronouns']
+        location = request.POST['location']
+        
+        # Update the user's profile information
+        user = CustomUser.objects.get(pk=request.user.id)
+        user.bio = bio
+        user.pronouns = pronouns
+        user.location = location
+        user.save()
+
+        return redirect('profile')  # Redirect to the user's profile page after saving changes
+
+    return render(request, 'edit_profile.html', {'user': request.user})
