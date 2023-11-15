@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser, Post, Like, Comment, Relationship, Notification
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import JsonResponse
 from .forms import PostForm, CommentForm
 
@@ -27,7 +28,7 @@ def create_post_view(request):
             post = form.save(commit=False)
             post.user = request.user
             post.save()
-            return redirect('home')  # Redirect to the home page after creating a post
+            return redirect('core:news_feed_view')  # Redirect to the home page after creating a post
     else:
         # Render an empty form for creating a new post
         form = PostForm()
@@ -69,7 +70,7 @@ def comment_post_view(request, post_id):
             comment.user = request.user
             comment.post = post
             comment.save()
-            return redirect('post_detail', post_id=post_id)  # Redirect to the post detail page after commenting
+            return redirect('core:post_detail', post_id=post_id)  # Redirect to the post detail page after commenting
     else:
         # Render an empty form for commenting on the post
         form = CommentForm()
@@ -138,18 +139,21 @@ def privacy_settings_view(request):
 
 
 
+
 def login_view(request):
+    logout(request)  # Logout the user first
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
-            return redirect('home')  # Redirect to the home page after successful login
+            return redirect('core:news_feed_view')
         else:
-            # Handle invalid login attempt (display an error message, etc.)
-            pass
-    return render(request, 'auth/login.html')
+            messages.error(request, 'Invalid login credentials. Please try again.')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'auth/login.html', {'form': form})
+
 
 
 
@@ -161,10 +165,10 @@ def register_view(request):
             # Optionally, log the user in after registration
             # user = form.save()
             # login(request, user)
-            return redirect('login')  # Redirect to the login page after successful registration
+            return redirect('core:login')  # Redirect to the login page after successful registration
     else:
         form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'auth/register.html', {'form': form})
 
 def edit_profile_view(request):
     if request.method == 'POST':
@@ -179,6 +183,6 @@ def edit_profile_view(request):
         user.location = location
         user.save()
 
-        return redirect('profile')  # Redirect to the user's profile page after saving changes
+        return redirect('core:profile')  # Redirect to the user's profile page after saving changes
 
-    return render(request, 'edit_profile.html', {'user': request.user})
+    return render(request, 'auth/edit_profile.html', {'user': request.user})
