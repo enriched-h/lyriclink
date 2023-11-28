@@ -3,8 +3,10 @@ from .models import CustomUser, Post, Like, Comment, Relationship, Notification
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse
 from .forms import PostForm, CommentForm
 
 
@@ -139,37 +141,60 @@ def privacy_settings_view(request):
 
 
 
+# Authentcation 
+def login_view(request, ):
+    return render(request, 'auth/login.html')
 
-def login_view(request):
-    logout(request)  # Logout the user first
-    if request.method == 'POST':
-        form = AuthenticationForm(request, request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('core:news_feed_view')
-        else:
-            messages.error(request, 'Invalid login credentials. Please try again.')
+# Use Django methods to authenticate the user
+def authenticate_user(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username = username, password = password)
+    if user is None:
+        return HttpResponseRedirect(
+            reverse('core:login_view'),
+            messages.error(request, 'Username or password incorrect, Please try again')
+        )
+    
     else:
-        form = AuthenticationForm()
-    return render(request, 'auth/login.html', {'form': form})
+        login(request, user)
 
+        return HttpResponseRedirect(
+            reverse('core:news_feed_view'),
+            messages.success(request,'Login successfully')
+        )
 
 
 
 def register_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # Optionally, log the user in after registration
-            # user = form.save()
-            # login(request, user)
-            return redirect('core:login')  # Redirect to the login page after successful registration
-    else:
-        form = UserCreationForm()
-    return render(request, 'auth/register.html', {'form': form})
+    return render(request, 'auth/register.html')
 
+
+
+def authenticate_registered_user(request):
+    username = request.POST['username']
+    email = request.POST['email']
+    password1 = request.POST['password1']  # Corrected: 'password1' instead of 'password'
+    password2 = request.POST['password2']  # Corrected: 'password2' instead of 'password'
+
+    if password1 != password2:
+        return HttpResponseRedirect(
+            reverse('core:register_view'),
+            messages.error(request, 'Passwords do not match. Please try again.')
+        )
+
+    new_user = User.objects.create_user(username=username, email=email, password=password1)
+    if new_user is None:
+        return HttpResponseRedirect(
+            reverse('core:register_view'),
+            messages.error(request, 'Username already exists. Please try another one.')
+        )
+    else:
+        new_user.save()
+        return HttpResponseRedirect(
+            reverse('core:news_feed_view'),
+            messages.success(request, 'Registered successfully')
+        )
 
 
 def edit_profile_view(request):

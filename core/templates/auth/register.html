@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Register</h2>
-    <form method="post" action="{% url 'core:register' %}">
+    <form method="post" action="{% url 'core:authenticate_registered_user' %}">
         {% csrf_token %}
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
@@ -17,6 +17,7 @@
         <input type="password" id="password1" name="password1" required><br>
         <label for="password2">Confirm Password:</label>
         <input type="password" id="password2" name="password2" required><br>
+
         <button type="submit">Register</button>
     </form>
 </body>

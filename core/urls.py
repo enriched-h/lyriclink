@@ -21,7 +21,7 @@ urlpatterns = [
     path('friend-requests/', views.friend_requests_view, name='friend_requests'),
 
     # News Feed URL
-    path('news-feed/', views.news_feed_view, name='news_feed'),
+    path('news-feed/', views.news_feed_view, name='news_feed_view'),
 
     # Notifications URL
     path('notifications/', views.notifications_view, name='notifications'),
@@ -36,6 +36,8 @@ urlpatterns = [
     # Authentication URLs
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
+    path('authenticate_user/', views.authenticate_user, name='authenticate_user'),
+    path('authenticate_registered_user/', views.authenticate_registered_user, name='authenticate_registered_user'),
 
     # Edit Profile URL
     path('edit_profile/', views.edit_profile_view, name='edit_profile'),

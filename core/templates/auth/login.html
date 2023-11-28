@@ -16,7 +16,7 @@
         </ul>
     {% endif %}
     <!-- Login form -->
-    <form method="post" action="{% url 'core:login' %}">
+    <form method="post" action="{% url 'core:authenticate_user' %}">
         {% csrf_token %}
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
